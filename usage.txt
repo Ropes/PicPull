@@ -1,0 +1,16 @@
+
+#Grabs the image from QuickMeme, name automatically pulled from site
+.py -qm <url>
+
+#Downloads an album from Imgur, files named incrementally from album url path designation
+.py -im <url>
+
+#Downloads an album from Imgur, custom name specified after the url
+.py -im <url> <custom_name_no_spaces>
+
+#Utility tools
+#Sets a path for a given choice, more can be specified than currently available
+.py -todir -choice <directory_path>
+
+#Returns all directory settings
+.py -todir 
