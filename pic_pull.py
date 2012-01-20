@@ -1,5 +1,6 @@
 from html.parser import HTMLParser, HTMLParseError
 import urllib.request
+from urllib.request import URLError
 from urllib.parse import urlparse
 from xml.parsers.expat import ParserCreate, ExpatError, errors
 import os, sys, re
@@ -25,7 +26,7 @@ class HtmlParse(HTMLParser):
       #print( 'Data:', data )
       self.img = False
 
-
+#Returns the HTML Code for a given url address
 def get_html(url):
   try:
     h = urllib.request.urlopen(url)
@@ -34,12 +35,15 @@ def get_html(url):
     print('Error printing page')
     return None
 
+#Sets the program's current directory
 def set_dir(todir):
   try:
     os.chdir(todir)
   except:
     print( 'Error setting directory:', OSError )
 
+#Downloads an image given the url and names it the given file_name
+#Writes the file to the current working directory
 def download_img(file_name, url):
   #Open the http url
   try:
@@ -55,10 +59,10 @@ def download_img(file_name, url):
   except URLError as err:
     print('URLError:', err, url)
 
+#Parses an Imgur album url and pulls out the album's randomly assigned url for naming purposes
 def get_name(url):
   p = urlparse(url)
   path = p.path
-  
   return re.findall('/a/(.*)', path).pop()
  
 
@@ -120,6 +124,11 @@ def read_setup(choice):
   #If choice not found return None
   return None
 
+
+#Function will test to see if the setup file has been created, if not it will create.
+#Checks to see if if the command has an associated path, if not it will add or update the command.
+#Choice is the command; ie(qm, im)
+#Path is the local path to the desired directory
 def chk_setup(choice, path):
   try:
     f = open('set.txt', 'r')
@@ -149,6 +158,8 @@ def chk_setup(choice, path):
   f.write(data)
   f.close()
 
+#Takes in the set of aruements and creates and returns the 'action' command
+#Action: [command, <url>, name to begiven to file]
 def parse_args(args):
   action = [None]*3
   action[0] = re.findall('[\w]+', args[0]).pop()
@@ -182,7 +193,7 @@ def main():
     else:
       set_dir('.')
 
-    print(func)
+    if(DEBUG): print(func)
     func(action)
 
 if __name__ == '__main__':
