@@ -41,7 +41,6 @@ def set_dir(todir):
     print( 'Error setting directory:', OSError )
 
 def download_img(file_name, url):
-  
   #Open the http url
   try:
     f = urllib.request.urlopen(url)
@@ -64,7 +63,6 @@ def get_name(url):
  
 
 def imgur_album_pull(action):
-  #html = get_html('http://qkme.me/35p92k') 
   url = action[1]
   custom_name = action[2]
   html = get_html(url)
@@ -74,7 +72,6 @@ def imgur_album_pull(action):
     file_base = custom_name
 
   img_list = []
-
   try:
     hp = HtmlParse(img_list)
     hp.feed(str(html))
@@ -90,9 +87,21 @@ def imgur_album_pull(action):
     download_img(file_name, url)
     i += 1
 
-def qm_img_pull(url):
-  print('nonthing here yet')
+#QuickMeme image puller modeled after the one from old code, uses RegExes which is bad but I'm too tired to update it right now.
+#UPDATE: Quickmeme's html code breaks the python html parser.  I want to keep this a simple script and avoid external libraries for simplicity to users, therefore I'll leave the RegExes until a better solution arrises.
+def qm_img_pull(action):
 
+  html = get_html(action[1])
+  usefull = re.findall(b'<div id=\"leftside\">.*<div id=\"rightside\"', html, re.DOTALL)
+  image = re.findall(b'src=\"(.*\.jpg)\"', usefull[0]).pop().decode('utf-8')
+  print( 'Grabbing image from:', image) 
+  title = re.findall(b'alt="([\w|\-|\s{1|2}]+)', usefull[0]).pop() 
+  title = title.decode('utf-8') 
+  tmp = title.split('-')
+  title = tmp[1] +'-'+ tmp[0] + '.jpg'
+
+  download_img(title, image)
+  
     
 #Parses out the correct file directory from the set.txt file based on the given choice/mode
 def read_setup(choice):
@@ -111,6 +120,34 @@ def read_setup(choice):
   #If choice not found return None
   return None
 
+def chk_setup(choice, path):
+  try:
+    f = open('set.txt', 'r')
+    skip = False
+  except:
+    print('Config set.txt file not found:', IOError)
+    f = open('set.txt', 'w')
+    skip = True
+
+  data = ''
+  found = False
+  if not skip:
+    for line in f:
+      l = line.split(':')
+      if l[0] == choice:
+        found = True
+        if(DEBUG): print('---', l[0], choice)
+        data += choice + ':' + path + '\n'
+      else:
+        if(DEBUG): print('+++', line)
+        data += line 
+    f.close()
+    f = open('set.txt', 'w')
+        
+  if not found:
+    data += choice + ':' + path + '\n' 
+  f.write(data)
+  f.close()
 
 def parse_args(args):
   action = [None]*3
@@ -118,7 +155,8 @@ def parse_args(args):
   
   #Setting Path to directories
   if args[0] == '-todir':
-    #this is gonna scuk..
+    cmd = re.findall('[\w]+', args[1]).pop()
+    chk_setup(cmd, args[2]) 
 
     return None
   #Normal downloading functionality
