@@ -1,0 +1,35 @@
+Josh Roppo
+joshroppo@gmail.com
+Pic Pull Python Script 0.1
+python3.2
+
+PicPull will download all focused images from the specified website and save the to a local directory specified by the user. 
+
+Supported Sites: QuickMeme, Imgur Albums, Generic images[comming soon]
+Program will download QuickMeme images bypassing the transparancy overlay and save locally.
+
+Program will download an entire Imgur album and save to a local directory using the album random designation as filenames with incrementation differentiation or a prefix filename specified by the user.
+
+Usage:
+
+Example:
+#Download images from an imgur album
+python3.2 pic_pull.py -im http://imgur.com/a/wLErl 
+Files will be named: wLErl0.jpg, wLErl1.jpg, ....
+
+python3.2 pic_pull.py -im http://imgur.com/a/wLErl minecraft
+Files will be named: minecraft0.jpg, minecraft1.jpg, ...
+
+#Download imgur album; file names will be based on album url 
+python3.2 pic_pull.py -im <url>
+
+#Download imgur album; file names will be specified by user
+python3.2 pic_pull.py -im <url> <desired filename prefix>
+
+#Download QuickMeme Image: Filename will be specified by the title and description of the image scraped from the html. *Very low probability of duplicates, however it is possible for an overwrite to occur*
+python3.2 pic_pull.py -qm <url>
+
+
+python3.2 pic_pull.py
+python3.2 pic_pull.py
+python3.2 pic_pull.py

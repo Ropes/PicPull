@@ -105,7 +105,8 @@ def qm_img_pull(action):
   title = tmp[1] +'-'+ tmp[0] + '.jpg'
 
   download_img(title, image)
-  
+ 
+
     
 #Parses out the correct file directory from the set.txt file based on the given choice/mode
 def read_setup(choice):
