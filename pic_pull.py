@@ -63,10 +63,12 @@ def get_name(url):
   return re.findall('/a/(.*)', path).pop()
  
 
-def imgur_album_pull(url, custom_name):
+def imgur_album_pull(action):
   #html = get_html('http://qkme.me/35p92k') 
+  url = action[1]
+  custom_name = action[2]
   html = get_html(url)
-  if custom_name == None:
+  if custom_name == '':
     file_base = str(get_name(url))
   else:
     file_base = custom_name
@@ -88,6 +90,9 @@ def imgur_album_pull(url, custom_name):
     download_img(file_name, url)
     i += 1
 
+def qm_img_pull(url):
+  print('nonthing here yet')
+
     
 #Parses out the correct file directory from the set.txt file based on the given choice/mode
 def read_setup(choice):
@@ -105,22 +110,44 @@ def read_setup(choice):
 
   #If choice not found return None
   return None
-  
-def parse_args(args):
-  if len(args) > 2:
-    p = ''
-    x = args[2:]
-    for i in x:
-      p += str(i)
 
+
+def parse_args(args):
+  action = [None]*3
+  action[0] = re.findall('[\w]+', args[0]).pop()
+  
+  #Setting Path to directories
+  if args[0] == '-todir':
+    #this is gonna scuk..
+
+    return None
+  #Normal downloading functionality
+  else:
+    #set the url
+    action[1] = args[1]
+    #Get custom name
+    action[2] = '_'.join(args[2:])
+  return action
+    
 
 def main():
+  pullers = {'im': imgur_album_pull, 'qm': qm_img_pull}
+
   args = sys.argv[1:]
-  todir = '.'
+  action = parse_args(args)
 
-  print(args) 
+  if action != None:
+    func = pullers[action[0]]
+    chdir = read_setup(action[0])
+    if chdir != None:
+      set_dir(chdir)
+    else:
+      set_dir('.')
 
- if __name__ == '__main__':
+    print(func)
+    func(action)
+
+if __name__ == '__main__':
   url = 'http://imgur.com/a/WSP8q'
   #imgur_album_pull(url)
   main()
